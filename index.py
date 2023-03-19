@@ -1,13 +1,14 @@
 from tkinter import *
 from tkinter import messagebox
 import pandas as pd
+import openpyxl
 
 # Função para validar o login
 def login():
     usuario = username_entry.get()
     senha = password_entry.get()
 
-    if usuario == "usuario" and senha == "12345":
+    if usuario == "" and senha == "":
         main_screen.deiconify()
         login_screen.destroy()
     else:
@@ -20,15 +21,26 @@ style_button = {"bg": "#00adb5", "fg": "#eeeeee", "font": ("Arial", 10)}
 
 # Função para salvar as informações da ferramenta
 def save_info():
-    cod_Ferramenta = cod_Ferramenta.get()
-    desc_solicitacao = desc_solicitacao.get()
-    dt_retirada = dt_retirada.get()
-    hr_retirada = hr_retirada.get()
-    dt_devolucao = dt_devolucao.get()
-    hr_devolucao = hr_devolucao.get()
-    tecnico_resp = tecnico_resp.get()
+    global cod_Ferrament , desc_solicitaca, dt_retirad, hr_retirad ,dt_devoluca,hr_devoluca ,tecnico_res
 
-    messagebox.showinfo("Informações salvas", f"Ferramenta: {cod_Ferramenta}\nDescrição: {desc_solicitacao}\nData de retirada: {dt_retirada} às {hr_retirada}\nData de devolução prevista: {dt_devolucao} às {hr_devolucao}\nTecnico: {tecnico_resp}")
+    cod_Ferrament = cod_Ferramenta.get()
+    desc_solicitaca = desc_solicitacao.get()
+    dt_retirad = dt_retirada.get()
+    hr_retirad = hr_retirada.get()
+    dt_devoluca = dt_devolucao.get()
+    hr_devoluca = hr_devolucao.get()
+    tecnico_res = tecnico_resp.get()
+    df = pd.read_excel('C:\workspace\Missao-Certificao\Ferramentas.xlsx', sheet_name='Reserva de Ferramentas')
+    novo_registro = pd.DataFrame({'Cód. da Ferramenta': cod_Ferrament, 'Descrição da Solicitação': desc_solicitaca,
+                                  'Data de Retirada (D/M/A)': dt_retirad,
+                                  'Hora de Retirada (H:M)': hr_retirad,
+                                  'Data de Devolução Prevista (D/M/A)': dt_devoluca,
+                                  'Hora de Devolução Prevista (H:M)': hr_devoluca,
+                                  'Técnico responsével(Retirada)': tecnico_res}, index=[0])
+    df = pd.concat([df, novo_registro], ignore_index=FALSE)
+    df.to_excel('C:\workspace\Missao-Certificao\Ferramentas.xlsx', sheet_name='Reserva de Ferramentas', index=False)
+
+    messagebox.showinfo("Informações salvas", f"Ferramenta: {cod_Ferrament}\nDescrição: {desc_solicitaca}\nData de retirada: {dt_retirad} às {hr_retirad}\nData de devolução prevista: {dt_devoluca} às {hr_devoluca}\nTecnico: {tecnico_res}")
 
 # Tela de login
 login_screen = Tk()
@@ -74,13 +86,14 @@ main_screen.title("Reserva de Ferramentas")
 main_screen.geometry("740x260")
 main_screen.withdraw()
 
-Label(main_screen, text="➤ Cód. da Ferramenta").grid(row=0, column=0, sticky=W)
-Label(main_screen, text="➤ Descrição da Solicitação").grid(row=1, column=0, sticky=W)
-Label(main_screen, text="➤ Data de Retirada (D/M/A)").grid(row=2, column=0, sticky=W)
-Label(main_screen, text="➤ Hora de Retirada (H:M)").grid(row=3, column=0, sticky=W)
-Label(main_screen, text="➤ Data de Devolução Prevista (D/M/A)").grid(row=4, column=0, sticky=W)
-Label(main_screen, text="➤ Hora de Devolução Prevista (H:M)").grid(row=5, column=0, sticky=W)
-Label(main_screen, text="➤ Técnico responsével(Retirada)").grid(row=6, column=0, sticky=W)
+Label(main_screen, text="").grid(row=0, column=0)
+Label(main_screen, text="➤ Cód. da Ferramenta",).grid(row=1, column=1,sticky="E" )
+Label(main_screen, text="➤ Descrição da Solicitação", justify=RIGHT).grid(row=2, column=1,sticky="E")
+Label(main_screen, text="➤ Data de Retirada (D/M/A)", justify=RIGHT).grid(row=3, column=1,sticky="E")
+Label(main_screen, text="➤ Hora de Retirada (H:M)", justify=RIGHT).grid(row=4, column=1,sticky="E")
+Label(main_screen, text="➤ Data de Devolução Prevista (D/M/A)", justify=RIGHT).grid(row=5, column=1,sticky="E")
+Label(main_screen, text="➤ Hora de Devolução Prevista (H:M)", justify=RIGHT).grid(row=6, column=1,sticky="E")
+Label(main_screen, text="➤ Técnico responsével(Retirada)", justify=RIGHT).grid(row=7, column=1, sticky="E")
 
 cod_Ferramenta = Entry(main_screen)
 desc_solicitacao = Entry(main_screen)
@@ -90,24 +103,32 @@ dt_devolucao = Entry(main_screen)
 hr_devolucao = Entry(main_screen)
 tecnico_resp = Entry(main_screen)
 
-cod_Ferramenta.grid(row=0, column=1)
-desc_solicitacao .grid(row=1, column=1)
-dt_retirada.grid(row=2, column=1)
-hr_retirada.grid(row=3, column=1)
-dt_devolucao.grid(row=4, column=1)
-hr_devolucao.grid(row=5, column=1)
-tecnico_resp.grid(row=6, column=1)
+cod_Ferramenta.grid(row=1, column=2)
+desc_solicitacao .grid(row=2, column=2)
+dt_retirada.grid(row=3, column=2)
+hr_retirada.grid(row=4, column=2)
+dt_devolucao.grid(row=5, column=2)
+hr_devolucao.grid(row=6, column=2)
+tecnico_resp.grid(row=7, column=2)
 
-Button(main_screen, text="✔ Salvar", command=save_info, **style_button).place(x=275, y=170)
-Button(main_screen, text="✘ Sair ", command=login_screen.quit, **style_button).place(x=347, y=170)
+cod_Ferrament = cod_Ferramenta.get()
+desc_solicitaca = desc_solicitacao.get()
+dt_retirad = dt_retirada.get()
+hr_retirad = hr_retirada.get()
+dt_devoluca = dt_devolucao.get()
+hr_devoluca = hr_devolucao.get()
+tecnico_res = tecnico_resp.get()
+
+Button(main_screen, text="✔ Salvar", command=save_info, **style_button).place(x=275, y=180)
+Button(main_screen, text="✘ Sair ", command=login_screen.quit, **style_button).place(x=370, y=180)
 
 #botão para cadastro/pesquisar de ferramentas
-Button(main_screen, text="✔ Cadastrar", command=save_info, **style_button).place(x=430, y=0)
-Button(main_screen, text="⌛ Pesquisar", command=save_info, **style_button).place(x=530, y=0)
-Button(main_screen, text="⌚ Reservar", command=save_info, **style_button).place(x=630, y=0)
+Button(main_screen, text="✔ Cadastrar Ferramentas", command=save_info, **style_button).place(x=370, y=19)
+Button(main_screen, text="⌛ Pesquisar", command=save_info, **style_button).place(x=370, y=100)
+Button(main_screen, text="⌚ Reservar", command=save_info, **style_button).place(x=370, y=139)
 
 #botão para cadastro de tecnicos
-Button(main_screen, text="✔ Cadastrar", command=save_info, **style_button).place(x=430, y=133)
+Button(main_screen, text="✔ Cadastrar Tecnicos", command=save_info, **style_button).place(x=370, y=60)
 
 
 
